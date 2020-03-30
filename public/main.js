@@ -51,12 +51,20 @@ let checkedMoves
 
 // -------------------------- main game functions ------------------------------------------------ //
 
-// function to check whether any winning combination has been achieved during play
+// function to check whether any winning combination (real or potential) has been achieved during play
 
-function gameWin() {
+// global variables needed to access arrays of moves
+
+let targetArray
+let oArray
+let winningCombo
+
+function arrayLoop() {
+  
   let index = 0
-
-  // loop to iterate through winning array combinations
+  let checkedSquares
+  
+  // loop to iterate through winning array combinations and search for particular combinations
 
   while (index < 8) {
 
@@ -83,7 +91,9 @@ function gameWin() {
 
     })
 
-    index++
+    // index++
+
+    // ---------- conditions used in 1-player and 2-player games ---------- //
 
     // checks if a winning combination has been reached
 
@@ -91,6 +101,60 @@ function gameWin() {
       endVariable = "end" // sets a unique condition to stop the timer
       return checkedMoves
     }
+
+    // ---------- conditions used for computer's moves in 1-player  game ---------- //
+
+    // function to filter arrays for Xs (for O's defensive moves)
+
+    checkedSquares = winningArrays[index].filter(function (value) {
+      return value.innerHTML === "X"
+    })
+
+    // array of X-moves that turns winningArrays into a useable array of values
+
+    let holdingArray = [winningArrays[index][0].innerHTML, winningArrays[index][1].innerHTML, winningArrays[index][2].innerHTML]
+
+    // function to filter arrays for Os (for offensive moves)
+
+    checkOs = winningArrays[index].filter(function (value) {
+      return value.innerHTML === 'O'
+    })
+
+    // array of O-moves that turns winningArrays into a useable array of values
+
+    let holdingOsArray = [winningArrays[index][0].innerHTML, winningArrays[index][1].innerHTML, winningArrays[index][2].innerHTML]
+
+    // checks if O has 2 squares in a winning array (for offense)
+
+    if ((checkOs.length === 2) && (!holdingOsArray.includes('X'))) {
+      oArray = winningArrays[index]
+      return oArray
+    }
+    else {
+
+      // if not, empties the array so that it does not pass the first if-check of the computer's moves
+
+      oArray = []
+    }
+
+    // checks if X has 2 squares in a winning array (for defense)
+
+    if ((checkedSquares.length === 2) && (!holdingArray.includes('O'))) {
+
+      targetArray = winningArrays[index]
+      return targetArray
+
+    } else {
+
+      // if not, empties the array so that it does not pass the second if-check of the computer's moves
+
+      targetArray = []
+    }
+
+    // ----------- continues loop for both games ----------- //
+
+    index++
+
   }
 }
 
@@ -192,9 +256,10 @@ let twoPlayerGame = function () {
 
       // checks for win
 
-      gameWin()
+      arrayLoop()
 
       if (checkedMoves.length === 3) {
+        // console.log('hi')
         playerStatus.innerHTML = currentPlayer.name + " wins!"
         for (let square of cells) {
           square.removeEventListener('click', gaming)
@@ -220,9 +285,10 @@ let twoPlayerGame = function () {
 
       // checks for win
 
-      gameWin()
+      arrayLoop()
 
       if (checkedMoves.length === 3) {
+        // console.log('hi again')
         playerStatus.innerHTML = currentPlayer.name + ' wins!'
         for (let square of cells) {
           square.removeEventListener('click', gaming)
@@ -284,7 +350,7 @@ function onePlayerGame() {
       window.alert("Please choose an empty square!")
     } else {
       event.target.innerHTML = currentPlayer.symbol
-      
+
     }
 
     // checks for tie       
@@ -297,7 +363,7 @@ function onePlayerGame() {
 
       // checks for win 
 
-      gameWin()
+      arrayLoop()
 
       if (checkedMoves.length === 3) {
         playerStatus.innerHTML = currentPlayer.name + " wins!"
@@ -323,7 +389,7 @@ function onePlayerGame() {
 
       // checks for win
 
-      gameWin()
+      arrayLoop()
 
       if (checkedMoves.length === 3) {
         playerStatus.innerHTML = currentPlayer.name + ' wins!'
@@ -347,11 +413,11 @@ function onePlayerGame() {
 
 // ------------------- computer's game logic ------------------------------ //
 
-// global variables needed to access arrays of moves
+// // global variables needed to access arrays of moves
 
-let checkArray
-let targetArray
-let oArray
+// let checkArray
+// let targetArray
+// let oArray
 
 // logic of computer's moves
 
@@ -359,7 +425,7 @@ function computerLogic() {
 
   // determines whether there are any available winning arrays for X or O
 
-  computerMove()
+  arrayLoop()
 
   // checks for immediate winning array for O
 
@@ -417,77 +483,77 @@ function computerLogic() {
 
 // function to check whether O needs to play defense or offense 
 
-function computerMove() {
+// function computerMove() {
 
-  // loop to iterate through winning array combinations
+//   // loop to iterate through winning array combinations
 
-  let index = 0
-  let checkedSquares
+//   let index = 0
+//   // let checkedSquares
 
-  while (index < 8) {
+//   while (index < 8) {
 
-    // winning array combinations
+//     // winning array combinations
 
-    checkArray = [
+//     checkArray = [
 
-      [c0, c1, c2],
-      [c0, c3, c6],
-      [c0, c4, c8],
-      [c3, c4, c5],
-      [c6, c7, c8],
-      [c1, c4, c7],
-      [c2, c5, c8],
-      [c2, c4, c6]
+//       [c0, c1, c2],
+//       [c0, c3, c6],
+//       [c0, c4, c8],
+//       [c3, c4, c5],
+//       [c6, c7, c8],
+//       [c1, c4, c7],
+//       [c2, c5, c8],
+//       [c2, c4, c6]
 
-    ]
-    // function to filter arrays for Xs (for defensive moves)
+//     ]
+//     // function to filter arrays for Xs (for defensive moves)
 
-    checkedSquares = checkArray[index].filter(function (value) {
-      return value.innerHTML === "X"
-    })
+//     checkedSquares = checkArray[index].filter(function (value) {
+//       return value.innerHTML === "X"
+//     })
 
-    // array of X-moves that turns checkArray into a useable array of values
+//     // array of X-moves that turns checkArray into a useable array of values
 
-    let holdingArray = [checkArray[index][0].innerHTML, checkArray[index][1].innerHTML, checkArray[index][2].innerHTML]
+//     let holdingArray = [checkArray[index][0].innerHTML, checkArray[index][1].innerHTML, checkArray[index][2].innerHTML]
 
-    // function to filter arrays for Os (for offensive moves)
+//     // function to filter arrays for Os (for offensive moves)
 
-    checkOs = checkArray[index].filter(function (value) {
-      return value.innerHTML === 'O'
-    })
+//     checkOs = checkArray[index].filter(function (value) {
+//       return value.innerHTML === 'O'
+//     })
 
-    // array of O-moves that turns checkArray into a useable array of values
+//     // array of O-moves that turns checkArray into a useable array of values
 
-    let holdingOsArray = [checkArray[index][0].innerHTML, checkArray[index][1].innerHTML, checkArray[index][2].innerHTML]
+//     let holdingOsArray = [checkArray[index][0].innerHTML, checkArray[index][1].innerHTML, checkArray[index][2].innerHTML]
 
-    // checks if O has 2 squares in a winning array (for offense)
+//     // checks if O has 2 squares in a winning array (for offense)
 
-    if ((checkOs.length === 2) && (!holdingOsArray.includes('X'))) {
-      oArray = checkArray[index]
-      return oArray
-    }
-    else {
+//     if ((checkOs.length === 2) && (!holdingOsArray.includes('X'))) {
+//       oArray = checkArray[index]
+//       return oArray
+//     }
+//     else {
 
-      // if not, empties the array so that it does not pass the first if-check of the computer's moves
+//       // if not, empties the array so that it does not pass the first if-check of the computer's moves
 
-      oArray = []
-    }
+//       oArray = []
+//     }
 
-    // checks if X has 2 squares in a winning array (for defense)
+//     // checks if X has 2 squares in a winning array (for defense)
 
-    if ((checkedSquares.length === 2) && (!holdingArray.includes('O'))) {
-      
-      targetArray = checkArray[index]      
-      return targetArray
+//     if ((checkedSquares.length === 2) && (!holdingArray.includes('O'))) {
 
-    } else {
-      
-      // if not, empties the array so that it does not pass the second if-check of the computer's moves
+//       targetArray = checkArray[index]      
+//       return targetArray
 
-      targetArray = []
-    }
+//     } else {
 
-    index++
+//       // if not, empties the array so that it does not pass the second if-check of the computer's moves
 
-  }
-}
+//       targetArray = []
+//     }
+
+//     index++
+
+//   }
+// }

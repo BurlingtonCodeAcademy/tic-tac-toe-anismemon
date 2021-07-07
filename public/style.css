@@ -11,6 +11,8 @@ h2 {
   font-size: 30px;
   text-align: center;
   height: 75px;
+  font-family: cursive;
+  color: red;
 }
 
 span{
@@ -21,8 +23,11 @@ span{
 div[id^="row-"] div {
   width: 200px;
   height: 200px;
-  border: 1px solid red;
+  border: 2px solid black;
   float: left;
+  font-family: cursive;
+  font-size: 120px;
+  color: red;
 
 }
 
@@ -53,4 +58,9 @@ div.board {
   width: 608px;
   overflow: hidden;
   margin: 0 auto;
+}
+
+div[id^="status-bar"] {
+  font-family: cursive;
+  font-size: 30px;
 }
